@@ -1,0 +1,19 @@
+.glyphicon-pencil {
+  color: #5cb85c;
+}
+.glyphicon-remove {
+  color: #d9534f;
+}
+
+.btn-default:hover {
+  background: none;
+}
+
+.flb-left {
+  line-height: 34px;
+  margin: 0;
+}
+
+.bold {
+  font-weight: 700;
+}
