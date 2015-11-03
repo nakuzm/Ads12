@@ -6,7 +6,7 @@ SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 DROP TABLE IF EXISTS `ads`;
 CREATE TABLE `ads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `private` tinyint(4) NOT NULL,
+  `type` enum('private','company') NOT NULL,
   `seller_name` varchar(60) NOT NULL,
   `email` varchar(30) NOT NULL,
   `allow_mails` tinyint(4) NOT NULL,

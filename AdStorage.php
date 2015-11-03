@@ -3,9 +3,6 @@
   class AdStorage {
     private static $instance = NULL;
     private $ads = array();
-    
-    function __construct() {
-    }
 
     public static function instance() {
       if (self::$instance == NULL) {
@@ -19,6 +16,7 @@
       if ( !($this instanceof AdStorage) ) {
         die("Нельзя использовать этот метод в конструкторе классов.");
       }
+      
       $this->ads[$ad->getId()] = $ad;
     }
 
@@ -39,12 +37,17 @@
         $smarty->assign('ad', $ad); 
         $row .= $smarty->fetch('table_row.tpl');
       }
+      
       $smarty->assign('ads_rows', $row);
       $smarty->assign( 'ads_single', new Ad() );
+      
+      return self::$instance;
     }
     
     public function writeOutSingle($smarty, $number) {
       $smarty->assign( 'ads_single', $this->ads[$number] );
+      
+      return self::$instance;
     }
     
   }

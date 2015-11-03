@@ -43,12 +43,12 @@
     
   $citys = HtmlOption::getCitys($db);
   $categories = HtmlOption::getCategories($db);
-  
-  AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
         
   $smarty->assign('category', $categories);
   $smarty->assign('city', $citys);
   $smarty->assign('ads_radios', array('private' => 'Частное объявление', 'company' => 'Объявление Компании'));
+  
+  AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
   
   if( isset($_POST['main_form_submit']) ) {
     if ( isset($_GET['edit']) ) $_POST['id'] = $_GET['edit'];

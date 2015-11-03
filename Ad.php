@@ -35,27 +35,27 @@
       }
     }
     
-    function getType() {
+    public function getType() {
       return $this->type;
     }
     
-    function getId() {
+    public function getId() {
       return $this->id;
     }
     
-    function getSellerName() {
+    public function getSellerName() {
       return $this->seller_name;
     }
     
-    function getEmail() {
+    public function getEmail() {
       return $this->email;
     }
     
-    function getPhone() {
+    public function getPhone() {
       return $this->phone;
     }
     
-    function getLocationId() {
+    public function getLocationId() {
       return $this->location_id;
     }
     
@@ -63,19 +63,19 @@
       return $this->category_id;
     }
     
-    function getTitle() {
+    public function getTitle() {
       return $this->title;
     }
     
-    function getDescription() {
+    public function getDescription() {
       return $this->description;
     }
     
-    function getPrice() {
+    public function getPrice() {
       return $this->price;
     }
     
-    function getAllowMails() {
+    public function getAllowMails() {
       return $this->allow_mails;
     }
     
@@ -84,7 +84,7 @@
       $db->query("REPLACE INTO ads(?#) VALUES(?a)", array_keys($vars), array_values($vars));
     }
 
-    static function delete($ad_nr, $db) {
+    public function delete($ad_nr, $db) {
       $db->query("DELETE FROM ads WHERE id = ?n", $ad_nr);
     }
   }
