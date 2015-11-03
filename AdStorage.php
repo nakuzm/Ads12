@@ -24,7 +24,12 @@
       $all = $db->select('select * from ads');
       
       foreach ($all as $adArray) {
-        $ad = new Ad($adArray);
+        if ($adArray['type'] == 'private') {
+          $ad = new AdPrivate($adArray);
+        } else {
+          $ad = new AdCompany($adArray);
+        }
+        
         $this->addAds($ad);
       }
       
@@ -34,22 +39,24 @@
     public function writeOut($smarty) {
       $row = '';
       foreach ($this->ads as $ad) {
+        if ($ad instanceof AdCompany) {
+          $row .= '<tr class="info">';
+        } else {
+          $row .= '<tr>';
+        }
         $smarty->assign('ad', $ad); 
         $row .= $smarty->fetch('table_row.tpl');
+        $row .= '</tr>';
       }
-      
       $smarty->assign('ads_rows', $row);
-      $smarty->assign( 'ads_single', new Ad() );
       
       return self::$instance;
     }
     
-    public function writeOutSingle($smarty, $number) {
-      $smarty->assign( 'ads_single', $this->ads[$number] );
-      
-      return self::$instance;
+    public function getAdFromStorage($number) {
+      return $this->ads[$number];
     }
-    
+
   }
   
 ?>

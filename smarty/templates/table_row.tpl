@@ -1,4 +1,4 @@
-<tr>
+
   <td>{$ad->getId()}</td>
   <td>{$ad->getTitle()}</td>
   <td>{$ad->getDescription()}</td>
@@ -10,5 +10,5 @@
         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
       </a>
   </td>
-</tr>
+
                                   

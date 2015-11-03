@@ -50,21 +50,30 @@
   
   AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
   
+  $smarty->assign('ads_single', new AdPrivate());
+  
   if( isset($_POST['main_form_submit']) ) {
     if ( isset($_GET['edit']) ) $_POST['id'] = $_GET['edit'];
     
-    $ad = new Ad($_POST);
+    if ($_POST['type'] == 'private') {
+      $ad = new AdPrivate($_POST);
+    } else {
+      $ad = new AdCompany($_POST);
+    }
     $ad->save($db);
     header( "Location: ".$_SERVER['PHP_SELF'] );
   }
   
   if ( isset($_GET['edit']) ) {
-    AdStorage::instance()->writeOutSingle($smarty, $_GET['edit']);
+    $adForEdit = AdStorage::instance()->getAdFromStorage($_GET['edit']);
+    $smarty->assign( 'ads_single', $adForEdit );
     $smarty->assign('ads_btn_value', 'Сохранить');
   }
 
   if ( isset($_GET['delete']) ) {
-    (new Ad())->delete( $_GET['delete'], $db );
+    $adForDelete = new Ad();
+    $adForDelete->setId($_GET['delete']);
+    $adForDelete->delete($db);
     header( "Location: ".$_SERVER['PHP_SELF'] );
   }
   

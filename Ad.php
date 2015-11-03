@@ -3,7 +3,7 @@
   class Ad {
     
     protected $id;
-    protected $type = 'private';
+    protected $type;
     protected $seller_name = "";
     protected $email = "";
     protected $phone = "";
@@ -20,7 +20,6 @@
       if( isset($ad['id']) ) {
         $this->id=$ad['id'];
       }
-      $this->type = $ad['type'];
       $this->seller_name = $ad['seller_name'];
       $this->email = $ad['email'];
       $this->phone = $ad['phone'];
@@ -41,6 +40,10 @@
     
     public function getId() {
       return $this->id;
+    }
+    
+    public function setId($id) {
+      return $this->id = $id;
     }
     
     public function getSellerName() {
@@ -84,8 +87,24 @@
       $db->query("REPLACE INTO ads(?#) VALUES(?a)", array_keys($vars), array_values($vars));
     }
 
-    public function delete($ad_nr, $db) {
-      $db->query("DELETE FROM ads WHERE id = ?n", $ad_nr);
+    public function delete($db) {
+      $db->query("DELETE FROM ads WHERE id = ?n", $this->id);
+    }
+  }
+  
+  class AdPrivate extends Ad {
+    protected $type = 'private';
+    
+    function __construct( $ad=NULL ) {
+      parent::__construct( $ad );
+    }
+  }
+  
+  class AdCompany extends Ad {
+    protected $type = 'company';
+    
+    function __construct( $ad=NULL ) {
+      parent::__construct( $ad );
     }
   }
   

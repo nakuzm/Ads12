@@ -3,7 +3,7 @@
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>#id</th>
+                  <th>Номер</th>
                   <th>Название</th>
                   <th>Описание</th>
                   <th>Действия</th>
