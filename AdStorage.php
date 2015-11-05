@@ -5,7 +5,7 @@
     private $ads = array();
 
     public static function instance() {
-      if (self::$instance == NULL) {
+      if (self::$instance === NULL) {
         self::$instance = new AdStorage();
       }
       
@@ -24,7 +24,7 @@
       $all = $db->select('select * from ads');
       
       foreach ($all as $adArray) {
-        if ($adArray['type'] == 'private') {
+        if ($adArray['type'] === 'private') {
           $ad = new AdPrivate($adArray);
         } else {
           $ad = new AdCompany($adArray);

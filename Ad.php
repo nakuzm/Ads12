@@ -92,21 +92,5 @@
     }
   }
   
-  class AdPrivate extends Ad {
-    protected $type = 'private';
-    
-    function __construct( $ad=NULL ) {
-      parent::__construct( $ad );
-    }
-  }
-  
-  class AdCompany extends Ad {
-    protected $type = 'company';
-    
-    function __construct( $ad=NULL ) {
-      parent::__construct( $ad );
-    }
-  }
-  
 ?>
 

@@ -23,6 +23,8 @@
   require('functions_DbSimple.php');
   require('Ad.php');
   require('AdStorage.php');
+  require('AdCompany.php');
+  require('AdPrivate.php');
     
   $db = (new DbSimple_Generic)->connect('mysqli://'.$serverConnect['user_name'].':'.$serverConnect['password'].'@'.$serverConnect['server_name'].'/'.$serverConnect['database']);
   $db->setErrorHandler('databaseErrorHandler');
@@ -55,7 +57,7 @@
   if( isset($_POST['main_form_submit']) ) {
     if ( isset($_GET['edit']) ) $_POST['id'] = $_GET['edit'];
     
-    if ($_POST['type'] == 'private') {
+    if ($_POST['type'] === 'private') {
       $ad = new AdPrivate($_POST);
     } else {
       $ad = new AdCompany($_POST);
