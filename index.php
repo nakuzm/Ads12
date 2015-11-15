@@ -76,7 +76,6 @@
     $adForDelete = new Ad();
     $adForDelete->setId($_GET['delete']);
     $adForDelete->delete($db);
-    header( "Location: ".$_SERVER['PHP_SELF'] );
   }
   
   $smarty->display('index.tpl');
