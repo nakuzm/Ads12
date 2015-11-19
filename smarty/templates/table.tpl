@@ -1,6 +1,6 @@
 <h2 class="sub-header">Все объявления</h2>
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table id="tableAdsOutput" class="table table-striped">
               <thead>
                 <tr>
                   <th>Номер</th>

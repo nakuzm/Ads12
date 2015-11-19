@@ -102,6 +102,8 @@
       </div>
                     
     </form>
+        
+    <div id="ajax-container"></div>
 </div>
 
 {include file='footer.tpl'}

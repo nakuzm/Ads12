@@ -3,17 +3,7 @@
   error_reporting(E_ALL ^ E_STRICT);
   ini_set('display_errors', 1);
   
-  require('read_data.php');
-  $fileNameServer = 'server_data.txt';
-  
-  $serverConnect = ( file_exists($fileNameServer) ) ? readData($fileNameServer) : false;
-  if(!$serverConnect) {
-      exit('Невозможно подключиться к базе данных, введите данные для подключения: '
-              . '<a href="install.php">Перейти на страницу подключения</a></br>');
-  }
-  
-  require_once __DIR__."/dbsimple/config.php";
-  require_once "DbSimple/Generic.php";
+  require('connect_to_db.php');
   
   require_once __DIR__."/firephp/FirePHP.class.php";
   $firePHP = FirePHP::getInstance(true);
@@ -25,8 +15,7 @@
   require('AdStorage.php');
   require('AdCompany.php');
   require('AdPrivate.php');
-    
-  $db = (new DbSimple_Generic)->connect('mysqli://'.$serverConnect['user_name'].':'.$serverConnect['password'].'@'.$serverConnect['server_name'].'/'.$serverConnect['database']);
+  
   $db->setErrorHandler('databaseErrorHandler');
   $db->setLogger('myLogger');
   
@@ -70,12 +59,6 @@
     $adForEdit = AdStorage::instance()->getAdFromStorage($_GET['edit']);
     $smarty->assign( 'ads_single', $adForEdit );
     $smarty->assign('ads_btn_value', 'Сохранить');
-  }
-
-  if ( isset($_GET['delete']) ) {
-    $adForDelete = new Ad();
-    $adForDelete->setId($_GET['delete']);
-    $adForDelete->delete($db);
   }
   
   $smarty->display('index.tpl');
