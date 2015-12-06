@@ -13,5 +13,5 @@
   require_once "DbSimple/Generic.php";
   
   $db = (new DbSimple_Generic)->connect('mysqli://'.$serverConnect['user_name'].':'.$serverConnect['password'].'@'.$serverConnect['server_name'].'/'.$serverConnect['database']);
-
+  $db->query("SET NAMES utf8");
 ?>

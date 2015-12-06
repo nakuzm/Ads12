@@ -88,7 +88,22 @@
     }
 
     public function delete($db) {
-      $db->query("DELETE FROM ads WHERE id = ?n", $this->id);
+      if ( $db->query("DELETE FROM ads WHERE id = ?n", $this->id) ){
+        $result['status'] = 'success';
+        $result['message'] = 'Товар удален успешно';
+      } else {
+        $result['status'] = 'error';
+        $result['message'] = 'Произошла ошибка при удалении товара';
+      }
+      if ($this->checkTableEmpty($db)) {
+        $result['tableEmpty'] = 'Внимание! Удалено последнее объявление!';
+      }
+      return json_encode($result);
+    }
+    
+    public function checkTableEmpty($db) {
+      $countRows = $db->query("SELECT COUNT(id) as count FROM ads");
+      return !$countRows[0]['count'];
     }
   }
   

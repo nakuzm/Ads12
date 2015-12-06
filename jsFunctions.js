@@ -3,23 +3,48 @@
   $('[data-toggle="tooltip"]').tooltip();
   
   var $table = $('#tableAdsOutput');
-  $table.on('click','a.js-delete',function(event) {
-    var $tr = $(event.target).closest('tr');
-    var id = $tr.children('td:first').html();
+  $table.on('click', 'a.js-btn', function (event) {
+    event.preventDefault();
+    var $target = $(event.target).closest('.js-btn'),
+      $tr = $target.closest('tr'),
+      id = $tr.children('td:first').html(),
+      adId = {id: id};
+    if ($target.hasClass('js-delete')) {
+      $.getJSON('index.php?action=delete', adId, function (responseText, textStatus) {
+        if (textStatus === "success") {
 
-    $('#ajax-container').load('ajax.php?delete=' + id, function(responseText, textStatus){
+          var $info = $('#ajax-alert-info');
 
-      if (textStatus === "success") {
-        $tr.fadeOut('slow',function() {
-            $tr.remove();
-        });
-      } else {
-        throw new Error("Ошибка при удалении объявления на сервере");
-      }
-
-    });
-    
+          $tr.fadeOut('slow', function () {
+              $tr.remove();
+              if ("tableEmpty" in responseText) {
+                $info.text(responseText['tableEmpty']).fadeIn('slow', function () {
+                  var $this = $(this);
+                  setTimeout(function () {
+                    $this.fadeOut.call($this, 'slow');
+                  }, 5000);
+                });            
+              }
+          });
+        } else {
+          throw new Error("Ошибка при ajax запросе");
+        }
+      }); 
+    } else {
+      $.get('index.php?action=edit', adId , function( data ) {
+        $('body').html(data);
+      });
+    }
   });
-   
+  
+  $("#ads-form").submit(function ( event ) {
+    event.preventDefault();
+    var $this = $(this);
+    $.post( "index.php", $this.serialize(), function ( data ) {
+      $( "body" ).html( data );
+    });
+  });
+  
+  
 })(jQuery);
 

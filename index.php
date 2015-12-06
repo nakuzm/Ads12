@@ -19,11 +19,9 @@
   $db->setErrorHandler('databaseErrorHandler');
   $db->setLogger('myLogger');
   
-  $db->query("SET NAMES utf8");
-  
   $smarty_dir = __DIR__.'/smarty/';
   require_once $smarty_dir.'libs/Smarty.class.php';
-
+  
   $smarty = new Smarty();
   $smarty->compile_check = true;
   $smarty->debugging = true;
@@ -31,36 +29,66 @@
   $smarty->compile_dir = $smarty_dir.'templates_c/';
   $smarty->config_dir = $smarty_dir.'configs/';
   $smarty->cache_dir = $smarty_dir.'cache/';
-    
-  $citys = HtmlOption::getCitys($db);
-  $categories = HtmlOption::getCategories($db);
+  
+  if ( !empty($_POST) ) {
         
-  $smarty->assign('category', $categories);
-  $smarty->assign('city', $citys);
-  $smarty->assign('ads_radios', array('private' => 'Частное объявление', 'company' => 'Объявление Компании'));
-  
-  AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
-  
-  $smarty->assign('ads_single', new AdPrivate());
-  
-  if( isset($_POST['main_form_submit']) ) {
-    if ( isset($_GET['edit']) ) $_POST['id'] = $_GET['edit'];
-    
     if ($_POST['type'] === 'private') {
       $ad = new AdPrivate($_POST);
     } else {
       $ad = new AdCompany($_POST);
     }
     $ad->save($db);
-    header( "Location: ".$_SERVER['PHP_SELF'] );
+    
+    $citys = HtmlOption::getCitys($db);
+    $categories = HtmlOption::getCategories($db);
+    $smarty->assign('category', $categories);
+    $smarty->assign('city', $citys);
+    $smarty->assign('ads_radios', array('private' => 'Частное объявление', 'company' => 'Объявление Компании'));
+
+    AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
+    $smarty->assign('ads_single', new AdPrivate());
+    $smarty->display('index.tpl');
+    
+  } elseif ( isset($_GET['action']) ) {
+    
+    switch ( $_GET['action'] ) {
+
+      case 'delete':
+        $ad = new Ad();
+        $ad->setId($_GET['id']);
+        echo $ad->delete($db);  		
+        break;
+
+      case 'edit':
+        $citys = HtmlOption::getCitys($db);
+        $categories = HtmlOption::getCategories($db);
+        $smarty->assign('category', $categories);
+        $smarty->assign('city', $citys);
+        $smarty->assign('ads_radios', array('private' => 'Частное объявление', 'company' => 'Объявление Компании'));
+
+        AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
+        $adForEdit = AdStorage::instance()->getAdFromStorage($_GET['id']);
+        $smarty->assign( 'ads_single', $adForEdit );
+        $smarty->assign('ads_btn_value', 'Сохранить');
+        $smarty->display('index.tpl');
+        break;
+
+      default:
+        break;
+    }    
+    
+  } else {  
+    $citys = HtmlOption::getCitys($db);
+    $categories = HtmlOption::getCategories($db);
+    $smarty->assign('category', $categories);
+    $smarty->assign('city', $citys);
+    $smarty->assign('ads_radios', array('private' => 'Частное объявление', 'company' => 'Объявление Компании'));
+
+    AdStorage::instance()->getAllAdsFromDb($db)->writeOut($smarty);
+    $smarty->assign('ads_single', new AdPrivate());
+    
+    $smarty->display('index.tpl');
   }
-  
-  if ( isset($_GET['edit']) ) {
-    $adForEdit = AdStorage::instance()->getAdFromStorage($_GET['edit']);
-    $smarty->assign( 'ads_single', $adForEdit );
-    $smarty->assign('ads_btn_value', 'Сохранить');
-  }
-  
-  $smarty->display('index.tpl');
+
 ?>
 
