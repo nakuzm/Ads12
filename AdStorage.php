@@ -36,26 +36,42 @@
       return self::$instance;
     }
     
+    public function getAdFromDb($db,$id) {
+      if (is_null($id)) {
+        $adArray = $db->selectRow('SELECT * FROM ads ORDER BY id DESC LIMIT 0,1');
+      }
+      else {
+        $adArray = $db->selectRow('SELECT * FROM ads WHERE id = ?', $id);
+      }
+      
+      if ($adArray['type'] === 'private') {
+        $ad = new AdPrivate($adArray);
+      } else {
+        $ad = new AdCompany($adArray);
+      }
+      $this->addAds($ad);
+      return self::$instance;
+    }
+    
     public function writeOut($smarty) {
-      $row = '';
+      $rows = '';
       foreach ($this->ads as $ad) {
         if ($ad instanceof AdCompany) {
-          $row .= '<tr class="info">';
+          $rows .= '<tr class="info">';
         } else {
-          $row .= '<tr>';
+          $rows .= '<tr>';
         }
         $smarty->assign('ad', $ad); 
-        $row .= $smarty->fetch('table_row.tpl');
-        $row .= '</tr>';
+        $rows .= $smarty->fetch('table_row.tpl');
+        $rows .= '</tr>';
       }
-      $smarty->assign('ads_rows', $row);
-      
-      return self::$instance;
+      return $rows;
     }
     
     public function getAdFromStorage($number) {
       return $this->ads[$number];
     }
+    
 
   }
   
