@@ -65,13 +65,10 @@
           } else {
             $("#ads-table tbody").append(responseText);
           }
-          $this.trigger( "table:insert" );
         } else {
           throw new Error("Ошибка при ajax запросе");
         }
       });
-    });
-    $(document).on("table:insert", "#ads-form", function (event) {
       var adId = {action: 'clear'};
       $.get('index.php', adId, function (responseText, textStatus) {
         if (textStatus === "success") {
@@ -80,8 +77,7 @@
           throw new Error("Ошибка при ajax запросе");
         }
       });
-    });
-    
+    });  
   });
   
 })(jQuery);
