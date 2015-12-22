@@ -57,16 +57,17 @@
   $smarty->assign('ads_radios', array('private' => 'Частное объявление', 'company' => 'Объявление Компании'));
   
   if (!empty($_GET['action']) && $_GET['action'] === 'edit') {
-    $smarty->assign('ads_btn_value', 'Сохранить');
     $adForEdit = AdStorage::instance()->getAdFromDb($db,$_GET['id'])->getAdFromStorage($_GET['id']);
-    $smarty->assign( 'ads_single', $adForEdit );
-    $smarty->display('form.tpl');
+    $adForEditArray = AdStorage::instance()->objectToArray($adForEdit);
+    $adForEditArray['main_form_submit'] = 'Сохранить';
+    echo json_encode($adForEditArray);
     die();
   }
   
   if (!empty($_GET['action']) && $_GET['action'] === 'clear') {
-    $smarty->assign('ads_single', new AdPrivate());
-    $smarty->display('form.tpl');
+    $adForEditArray = AdStorage::instance()->objectToArray(new AdPrivate());
+    $adForEditArray['main_form_submit'] = 'Отправить';
+    echo json_encode($adForEditArray);
     die();
   }
 

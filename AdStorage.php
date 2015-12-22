@@ -72,6 +72,24 @@
       return $this->ads[$number];
     }
     
+    public function objectToArray($ad) {
+        if($ad instanceof Ad) {
+          $adModified = array();
+          $adModified['id'] = $ad->getId();
+          $adModified['type'] = $ad->getType();
+          $adModified['seller_name'] = $ad->getSellerName();
+          $adModified['email'] = $ad->getEmail();
+          $adModified['allow_mails'] = $ad->getAllowMails();
+          $adModified['phone'] = $ad->getPhone();
+          $adModified['location_id'] = $ad->getLocationId();
+          $adModified['category_id'] = $ad->getCategoryId();
+          $adModified['title'] = $ad->getTitle();
+          $adModified['description'] = $ad->getDescription();
+          $adModified['price'] = $ad->getPrice();
+        }
+        return $adModified;
+    }
+    
 
   }
   

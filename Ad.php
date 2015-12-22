@@ -7,12 +7,12 @@
     protected $seller_name = "";
     protected $email = "";
     protected $phone = "";
-    protected $location_id = "";
-    protected $category_id = "";
+    protected $location_id = "0";
+    protected $category_id = "0";
     protected $title = "";
     protected $description = "";
-    protected $price = 0;
-    protected $allow_mails = 0;
+    protected $price = "0";
+    protected $allow_mails = "0";
       
     function __construct( $ad=NULL ) {
       if(!$ad) return;

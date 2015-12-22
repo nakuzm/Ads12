@@ -3,6 +3,7 @@
     $('[data-toggle="tooltip"]').tooltip();
 
     var $table = $('#tableAdsOutput');
+    
     $table.on('click', 'a.js-delete', function (event) {
       event.preventDefault();
       var $target = $(event.target).closest('.js-delete'),
@@ -45,14 +46,44 @@
           action: 'edit'
         };
       $tr.addClass('is-edit');
-      $.get('index.php', adId, function (responseText, textStatus) {
+      $.getJSON('index.php', adId, function (responseText, textStatus) {
         if (textStatus === "success") {
-          $('#form-wrap').html(responseText);    
+          replaceFormValues(responseText);
         } else {
           throw new Error("Ошибка при ajax запросе");
         }
       });
     });
+    
+    function replaceFormValues(formValues) {
+      var $form = $('#ads-form');
+      for(var key in formValues) {
+        if (key === 'location_id' || key === 'category_id') {
+          if(formValues[key] === '0') {
+            $form.find('select[name="'+ key +'"]').val('');
+            continue;
+          }
+          $form.find('select[name="'+ key +'"]').val(formValues[key]);
+          continue;
+        }
+        else if (key === 'type') {
+          $form.find('input[value="'+ formValues[key] +'"]').prop( "checked", true );
+          continue;
+        }
+        else if (key === 'allow_mails') {
+          if(formValues[key] === '0') {
+          $form.find('input[name="'+ key +'"]').prop( "checked", false );
+          continue; 
+        }
+          $form.find('input[name="'+ key +'"]').prop( "checked", true );
+        } 
+        else if (key === 'description') {
+          $form.find('textarea[name="'+ key +'"]').val(formValues[key]);
+          continue;
+        }
+        $form.find('input[name="'+ key +'"]').val(formValues[key]);
+      }
+    }
     
     $(document).on("submit", "#ads-form", function (event) {
       event.preventDefault();
@@ -70,9 +101,9 @@
         }
       });
       var adId = {action: 'clear'};
-      $.get('index.php', adId, function (responseText, textStatus) {
+      $.getJSON('index.php', adId, function (responseText, textStatus) {
         if (textStatus === "success") {
-          $('#form-wrap').html(responseText);
+          replaceFormValues(responseText);
         } else {
           throw new Error("Ошибка при ajax запросе");
         }
