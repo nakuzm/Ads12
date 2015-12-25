@@ -84,7 +84,15 @@
     
     public function save($db) {
       $vars = get_object_vars($this);
-      $db->query("REPLACE INTO ads(?#) VALUES(?a)", array_keys($vars), array_values($vars));
+      if ($db->query("REPLACE INTO ads(?#) VALUES(?a)", array_keys($vars), array_values($vars))) {
+        $result['status'] = 'success';
+      } else {
+        $result['status'] = 'error';
+      }
+      return $result;
+    }
+    public function objectToArray() {
+      return get_object_vars($this);
     }
 
     public function delete($db) {

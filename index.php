@@ -44,9 +44,10 @@
     } else {
       $ad = new AdCompany($_POST);
     }
-    $ad->save($db);
+    $resultFromSaveAd = $ad->save($db);
     $row = AdStorage::instance()->getAdFromDb($db,$id)->writeOut($smarty);
-    echo $row;
+    $resultFromSaveAd['row'] = $row;
+    echo json_encode($resultFromSaveAd);
     die();
   }
 
@@ -58,15 +59,8 @@
   
   if (!empty($_GET['action']) && $_GET['action'] === 'edit') {
     $adForEdit = AdStorage::instance()->getAdFromDb($db,$_GET['id'])->getAdFromStorage($_GET['id']);
-    $adForEditArray = AdStorage::instance()->objectToArray($adForEdit);
+    $adForEditArray = $adForEdit->objectToArray();
     $adForEditArray['main_form_submit'] = 'Сохранить';
-    echo json_encode($adForEditArray);
-    die();
-  }
-  
-  if (!empty($_GET['action']) && $_GET['action'] === 'clear') {
-    $adForEditArray = AdStorage::instance()->objectToArray(new AdPrivate());
-    $adForEditArray['main_form_submit'] = 'Отправить';
     echo json_encode($adForEditArray);
     die();
   }
