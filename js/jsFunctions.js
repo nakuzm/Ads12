@@ -15,20 +15,17 @@
         };
 
       $.getJSON('index.php', adId, function (responseText, textStatus) {
+        var $info;
         if (textStatus === "success") {
-          var $info = $('#ajax-alert-info');
+          $info = $('#ajax-alert-info');
 
           $tr.fadeOut('slow', function () {
               $tr.remove();
-
               if ("tableEmpty" in responseText) {
-                $info.text(responseText['tableEmpty']).fadeIn('slow', function () {
-                  var $this = $(this);
-                  setTimeout(function () {
-                    $this.fadeOut.call($this, 'slow');
-                  }, 5000);
-                });
+                showAlertMessage($info, responseText['tableEmpty']);
+                return;
               }
+              showAlertMessage($info, 'Товар удален успешно');;
           });
         } else {
           throw new Error("Ошибка при ajax запросе");
@@ -53,6 +50,45 @@
           throw new Error("Ошибка при ajax запросе");
         }
       });
+    });
+        
+    $(document).on("submit", "#ads-form", function (event) {
+      event.preventDefault();
+      var $this = $(this),
+        options = { 
+          success: successFormSubmit,
+          url:       'index.php',          
+          type:      'post',        
+          dataType:  'json',        
+          resetForm: true        
+        }; 
+      $this.ajaxSubmit(options);
+      
+      function successFormSubmit(responseText, textStatus) {
+        $("#ads-form").find('input[name="id"]').val('');
+        var $rowForEdit, $alertContainer;
+        if (textStatus === "success") {
+          
+          if(responseText['status'] === 'error') {
+            $alertContainer = $('#ajax-alert-danger');
+            showAlertMessage($alertContainer, 'Произошла ошибка при добавлении товара');        
+            return;
+          }
+          
+          $rowForEdit = $('tr.is-edit');
+          $alertContainer = $('#ajax-alert-success');
+          
+          if ($rowForEdit.length) {
+            $rowForEdit.replaceWith(responseText['row']);
+            showAlertMessage($alertContainer, 'Товар изменен успешно');
+          } else {
+            $("#ads-table tbody").append(responseText['row']);
+            showAlertMessage($alertContainer, 'Товар добавлен успешно');             
+          }
+        } else {
+          throw new Error("Ошибка при ajax запросе");
+        }      
+      }
     });
     
     function replaceFormValues(formValues) {
@@ -84,31 +120,16 @@
         $form.find('input[name="'+ key +'"]').val(formValues[key]);
       }
     }
+
+    function showAlertMessage(element, message) {
+      element.text(message).fadeIn('slow', function () {
+        var $this = $(this);
+        setTimeout(function () {
+          $this.fadeOut.call($this);
+        }, 1000);
+      });     
+    }
     
-    $(document).on("submit", "#ads-form", function (event) {
-      event.preventDefault();
-      var $this = $(this);
-      $.post('index.php', $this.serialize(), function (responseText, textStatus) {
-        if (textStatus === "success") {
-          var $rowForEdit = $('tr.is-edit');
-          if ($rowForEdit.length) {
-            $rowForEdit.replaceWith(responseText);
-          } else {
-            $("#ads-table tbody").append(responseText);
-          }
-        } else {
-          throw new Error("Ошибка при ajax запросе");
-        }
-      });
-      var adId = {action: 'clear'};
-      $.getJSON('index.php', adId, function (responseText, textStatus) {
-        if (textStatus === "success") {
-          replaceFormValues(responseText);
-        } else {
-          throw new Error("Ошибка при ajax запросе");
-        }
-      });
-    });  
   });
   
 })(jQuery);
